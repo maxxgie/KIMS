@@ -1,0 +1,65 @@
+/* System Admin Specific Styles */
+
+.admin-section {
+    background: white;
+    padding: 20px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.admin-table th {
+    text-align: left;
+    background: #f4f4f4;
+    padding: 10px;
+    border-bottom: 2px solid #333;
+}
+
+.admin-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.status-active {
+    color: #2e7d32;
+    font-weight: bold;
+    background: #e8f5e9;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+/* Audit Log Styling */
+.audit-log {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    height: 200px;
+    overflow-y: scroll;
+    padding: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 11px;
+}
+
+.log-entry {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.log-entry.warning {
+    color: #d32f2f;
+    background: #ffebee;
+}
+
+.log-time { color: #888; margin-right: 10px; }
+.log-user { font-weight: bold; color: #333; margin-right: 10px; }

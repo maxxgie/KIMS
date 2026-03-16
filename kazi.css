@@ -1,0 +1,117 @@
+/* KIMS — Kazi na Masomo (Vocational Training) Stylesheet */
+
+/* --- Table View (Training Log) --- */
+.training-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 20px;
+    font-size: 12px;
+    border: 1px solid #ddd;
+}
+
+.training-table th {
+    background-color: #333;
+    color: #ffffff;
+    text-align: left;
+    padding: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.training-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eeeeee;
+    color: #444;
+}
+
+.training-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* --- Summary View (Trainee Performance) --- */
+
+/* Workshop Progress Cards */
+.summary-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.workshop-card {
+    background: #ffffff;
+    border: 1px solid #cccccc;
+    padding: 20px;
+    flex: 1;
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.workshop-card:hover {
+    border-color: #333;
+}
+
+.workshop-card h4 {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hour-count {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333333;
+    display: block;
+}
+
+/* Progress Bar Components */
+.progress-bar-bg {
+    background: #e0e0e0;
+    height: 10px;
+    width: 100%;
+    margin-top: 15px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: #333333; /* Default KIMS dark gray */
+    height: 100%;
+    transition: width 0.5s ease-in-out;
+}
+
+/* Green fill for completed/high-progress items */
+.progress-fill.success {
+    background: #2e7d32;
+}
+
+/* --- Alerts & Notices --- */
+
+.award-notice {
+    background-color: #fff9c4; /* Soft yellow alert from wireframe */
+    border: 1px solid #fbc02d;
+    padding: 18px;
+    margin-top: 25px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #333;
+    display: flex;
+    align-items: center;
+    border-left: 5px solid #fbc02d;
+}
+
+/* --- Form Actions Extension --- */
+.btn-success {
+    background-color: #2e7d32;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-success:hover {
+    background-color: #1b5e20;
+}

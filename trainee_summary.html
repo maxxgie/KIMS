@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KIMS — Trainee Summary</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="kazi.css"> </head>
+<body>
+    <header class="top-nav">
+        <div class="logo">KIMS — King'ong'o Inmate Management System</div>
+        <div class="user-info">Vocational Instructor: Mwangi J. | <a href="#">[Logout]</a></div>
+    </header>
+
+    <nav class="breadcrumb">Home > Kazi na Masomo > Trainee Summary > KIMS-2026-0031</nav>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <ul>
+                <li data-page="dashboard">Dashboard</li>
+                <li data-page="registration">Inmate Registration</li>
+                <li data-page="judicial">Judicial Tracking</li>
+                <li data-page="kazi" class="active">Kazi na Masomo</li>
+                <li data-page="housing">Housing / Cell Block</li>
+                <li data-page="reports">Reports</li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <div class="header-actions">
+                <h2>Trainee Performance Profile</h2>
+                <button class="btn-secondary" onclick="window.history.back()">[ Back to Log ]</button>
+            </div>
+            <hr>
+
+            <section class="profile-summary" style="display: flex; background: #fff; border: 1px solid #ccc; padding: 20px; margin: 20px 0; gap: 20px;">
+                <div style="width: 100px; height: 100px; background: #eee; border: 1px dashed #999; display: flex; align-items: center; justify-content: center; font-size: 10px;">PHOTO</div>
+                <div>
+                    <p><strong>Inmate:</strong> John Doe (KIMS-2026-0031)</p>
+                    <p><strong>Primary Trade:</strong> Tailoring & Garment Making</p>
+                    <p><strong>Status:</strong> Active Learner</p>
+                </div>
+            </section>
+
+            <h3>Workshop Progress</h3>
+            <div class="summary-container" style="display: flex; gap: 20px; margin-top: 15px;">
+                <div class="workshop-card" style="background: white; border: 1px solid #ddd; padding: 20px; flex: 1; text-align: center;">
+                    <h4>TAILORING</h4>
+                    <div class="hour-count" style="font-size: 32px; font-weight: bold; color: #2e7d32;">104.5</div>
+                    <p style="font-size: 10px; color: #666;">Total Hours Logged</p>
+                    <div class="progress-bar-bg" style="background: #e0e0e0; height: 8px; width: 100%; margin-top: 10px;">
+                        <div class="progress-fill" style="background: #2e7d32; height: 100%; width: 100%;"></div>
+                    </div>
+                </div>
+
+                <div class="workshop-card" style="background: white; border: 1px solid #ddd; padding: 20px; flex: 1; text-align: center;">
+                    <h4>CARPENTRY</h4>
+                    <div class="hour-count" style="font-size: 32px; font-weight: bold; color: #333;">12.0</div>
+                    <p style="font-size: 10px; color: #666;">Total Hours Logged</p>
+                    <div class="progress-bar-bg" style="background: #e0e0e0; height: 8px; width: 100%; margin-top: 10px;">
+                        <div class="progress-fill" style="background: #333; height: 100%; width: 12%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="award-notice" style="background-color: #fff9c4; border: 1px solid #fbc02d; padding: 15px; margin-top: 25px; font-size: 13px; font-weight: bold;">
+                🎉 ELIGIBILITY MET: This inmate has exceeded 100 hours in Tailoring.
+            </div>
+
+            <div class="form-actions" style="margin-top: 30px; display: flex; gap: 10px;">
+                <button class="btn-primary">[ PRINT SUMMARY REPORT ]</button>
+                <button class="btn-secondary" style="background-color: #388e3c; color: white; border: none;">[ REQUEST CERTIFICATE ]</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="navigation.js"></script>
+</body>
+</html>

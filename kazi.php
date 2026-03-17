@@ -5,6 +5,7 @@ $inmate = null;
 $search_query = "";
 $total_hours = 0;
 
+// Handle Search Query
 if (isset($_GET['search_id'])) {
     $search_query = mysqli_real_escape_string($conn, $_GET['search_id']);
     $sql = "SELECT i.*, 
@@ -23,10 +24,9 @@ if (isset($_GET['search_id'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KIMS — Kazi na Masomo</title>
+    <title>KIMS — Vocational Activity Ledger</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Specific tweaks to match Screenshot 3's "Dashboard" style within Kazi */
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
         .stat-card { background: white; border: 1px solid #ddd; border-top: 4px solid #333; padding: 15px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .stat-card.blue { border-top-color: #1a73e8; }
@@ -41,19 +41,25 @@ if (isset($_GET['search_id'])) {
             font-size: 13px; 
             text-transform: uppercase; 
         }
-
-        .report-table { width: 100%; border-collapse: collapse; border: 1px solid #ddd; margin-top: 10px; }
-        .report-table th { background: #f8f8f8; text-align: left; padding: 12px; border: 1px solid #ddd; font-size: 12px; color: #555; }
-        .report-table td { padding: 12px; border: 1px solid #ddd; font-size: 13px; }
+        
+        .alert { padding: 12px; margin-bottom: 20px; border-radius: 4px; font-weight: bold; font-size: 14px; }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         
         .placeholder-box { margin-top: 100px; text-align: center; border: 2px dashed #ccc; padding: 80px; color: #888; border-radius: 8px; }
+        
+        /* Table Styling to match Dashboard and Judicial Records */
+        .report-table { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; font-size: 13px; }
+        .report-table th { background: #f8f9fa; color: #666; text-align: left; padding: 12px; border-bottom: 2px solid #eee; font-size: 11px; }
+        .report-table td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        .btn-delete-link { color: #d32f2f; font-weight: bold; text-decoration: none; font-size: 11px; }
+        .btn-delete-link:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
     <header class="top-nav">
         <div class="logo">KIMS — King'ong'o Inmate Management System</div>
-        <div class="user-info">Records Officer: <?php echo "maxwellnjane@gmail.com"; ?> | <a href="logout.php">[Logout]</a></div>
+        <div class="user-info">Records Officer: maxwellnjane@gmail.com | <a href="logout.php">[Logout]</a></div>
     </header>
 
     <nav class="breadcrumb">Home > Kazi na Masomo</nav>
@@ -62,6 +68,10 @@ if (isset($_GET['search_id'])) {
         <?php include 'sidebar.php'; ?>
 
         <main class="content">
+            <?php if(isset($_GET['status']) && $_GET['status'] == 'success'): ?>
+                <div class="alert alert-success">✓ Record updated successfully.</div>
+            <?php endif; ?>
+
             <div class="header-actions">
                 <h2 style="font-size: 24px; color: #333;">Vocational Activity Ledger</h2>
                 <form action="kazi.php" method="GET" class="search-box">
@@ -133,20 +143,33 @@ if (isset($_GET['search_id'])) {
                             <th>WORKSHOP UNIT</th>
                             <th>HOURS</th>
                             <th>SUPERVISOR</th>
+                            <th style="text-align: center;">ACTION</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         $id = $inmate['inmate_id'];
                         $logs = $conn->query("SELECT * FROM training_logs WHERE inmate_id = $id ORDER BY date_logged DESC LIMIT 10");
-                        while($row = $logs->fetch_assoc()): ?>
-                            <tr>
-                                <td><?php echo date('d-m-Y', strtotime($row['date_logged'])); ?></td>
-                                <td><?php echo $row['workshop_name']; ?></td>
-                                <td><strong><?php echo number_format($row['hours_logged'], 2); ?> hrs</strong></td>
-                                <td><?php echo $row['instructor_id']; ?></td>
-                            </tr>
-                        <?php endwhile; ?>
+                        
+                        if ($logs->num_rows > 0):
+                            while($row = $logs->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?php echo date('d-m-Y', strtotime($row['date_logged'])); ?></td>
+                                    <td><?php echo htmlspecialchars($row['workshop_name']); ?></td>
+                                    <td><strong><?php echo number_format($row['hours_logged'], 2); ?> hrs</strong></td>
+                                    <td><?php echo htmlspecialchars($row['instructor_id']); ?></td>
+                                    <td style="text-align: center;">
+                                        <a href="delete_record.php?type=log&id=<?php echo $row['log_id']; ?>" 
+                                           class="btn-delete-link" 
+                                           onclick="return confirm('WARNING: Remove this vocational log entry?');">
+                                           [ DELETE ]
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endwhile;
+                        else: ?>
+                            <tr><td colspan="5" style="text-align:center; padding: 20px; color: #999;">No logs found for this trainee.</td></tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
 

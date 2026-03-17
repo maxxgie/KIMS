@@ -125,7 +125,7 @@ $kazi_count = $conn->query("SELECT COUNT(DISTINCT inmate_id) as total FROM train
                 </thead>
                 <tbody>
                     <?php
-                    $recent_res = $conn->query("SELECT kims_id, full_name, offence_category, date_admitted FROM inmates ORDER BY date_admitted DESC LIMIT 5");
+                    $recent_res = $conn->query("SELECT inmate_id, kims_id, full_name, offence_category, date_admitted FROM inmates ORDER BY date_admitted DESC LIMIT 5");
                     if ($recent_res && $recent_res->num_rows > 0) {
                         while($row = $recent_res->fetch_assoc()) {
                             echo "<tr>
@@ -133,7 +133,10 @@ $kazi_count = $conn->query("SELECT COUNT(DISTINCT inmate_id) as total FROM train
                                     <td>{$row['full_name']}</td>
                                     <td>{$row['offence_category']}</td>
                                     <td>" . date('d-m-Y', strtotime($row['date_admitted'])) . "</td>
-                                    <td><a href='search.php?kims_id={$row['kims_id']}' class='view-link'>[ View Profile ]</a></td>
+                                    <td>
+                                        <a href='search.php?kims_id={$row['kims_id']}' class='btn-action btn-view'>VIEW</a>
+                                        <a href='delete_record.php?type=inmate&id={$row['inmate_id']}' class='btn-action btn-delete' onclick=\"return confirm('WARNING: This will delete the inmate and all history. Continue?');\">DELETE</a>
+                                    </td>
                                   </tr>";
                         }
                     } else {
@@ -152,6 +155,7 @@ $kazi_count = $conn->query("SELECT COUNT(DISTINCT inmate_id) as total FROM train
                         <th>Workshop Unit</th>
                         <th>Hours</th>
                         <th>Supervisor</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -171,6 +175,7 @@ $kazi_count = $conn->query("SELECT COUNT(DISTINCT inmate_id) as total FROM train
                                     <td>{$vlog['workshop_name']}</td>
                                     <td><strong>{$vlog['hours_logged']} hrs</strong></td>
                                     <td style='color: #666;'>{$vlog['instructor_id']}</td>
+                                    <td><a href='delete_record.php?type=log&id={$vlog['log_id']}' class='btn-action btn-delete' onclick=\"return confirm('Delete this log entry?');\">DELETE</a></td>
                                   </tr>";
                         }
                     } else {

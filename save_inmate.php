@@ -12,6 +12,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $court = mysqli_real_escape_string($conn, $_POST['court_name']);
     $admission_date = mysqli_real_escape_string($conn, $_POST['admission_date']);
 
+    // Use NULL if block_id is 0 or empty to prevent Foreign Key errors
+    $raw_block_id = isset($_POST['block_id']) ? (int)$_POST['block_id'] : 0;
+    $block_id = ($raw_block_id > 0) ? $raw_block_id : "NULL";
+
     // 2. Generate KIMS ID Automatically
     $year = date("Y");
     $random = rand(1000, 9999);
@@ -44,6 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 gender, 
                 offence_category, 
                 sentence_years, 
+                block_id,
                 edd, 
                 date_admitted, 
                 photo_url, 
@@ -56,6 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 '$gender', 
                 '$offence', 
                 '$sentence', 
+                $block_id,
                 '$edd', 
                 '$admission_date', 
                 '$photo_name', 

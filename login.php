@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php endif; ?>
 
         <form action="login.php" method="POST"> 
-            <div class="form-group">
+432            <div class="form-group">
                 <label>SERVICE NUMBER / USERNAME</label>
                 <input type="text" name="username" placeholder="e.g. admin" required autocomplete="off">
             </div>

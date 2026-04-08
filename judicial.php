@@ -15,7 +15,7 @@ $court_history = null;
 // 2. Search Logic
 if (isset($_GET['search_id'])) {
     $search_query = mysqli_real_escape_string($conn, $_GET['search_id']);
-    // Search by KIMS ID
+    // Search by KIMS ID in the inmates table
     $sql = "SELECT * FROM inmates WHERE kims_id = '$search_query'";
     $result = $conn->query($sql);
     
@@ -42,7 +42,6 @@ if (isset($_GET['search_id'])) {
     <style>
         .highlight-today { background: #fff3f3; font-weight: bold; border-left: 3px solid #d32f2f; }
         
-        /* Section Title matching Dashboard/Registration Style */
         .section-header { 
             background: #eee; padding: 10px 15px; font-weight: bold; 
             border-left: 5px solid #333; margin: 25px 0 10px 0; 
@@ -52,6 +51,17 @@ if (isset($_GET['search_id'])) {
         .report-table { width: 100%; border-collapse: collapse; border: 1px solid #ddd; background: #fff; }
         .report-table th { background: #f8f8f8; text-align: left; padding: 12px; border: 1px solid #ddd; font-size: 11px; color: #555; text-transform: uppercase; }
         .report-table td { padding: 12px; border: 1px solid #ddd; font-size: 13px; }
+
+        .btn-amend {
+            padding: 6px 15px; background: #333; color: white; border: none; 
+            cursor: pointer; font-size: 11px; font-weight: bold; transition: background 0.2s;
+        }
+        .btn-amend:hover { background: #000; }
+        
+        .crime-select {
+            padding: 8px; border: 1px solid #ccc; width: 450px; 
+            font-size: 13px; background: #fffde7;
+        }
     </style>
 </head>
 <body>
@@ -93,6 +103,88 @@ if (isset($_GET['search_id'])) {
                         <div><strong>NAME:</strong> <?php echo strtoupper($inmate['full_name']); ?></div>
                         <div><strong>KIMS-ID:</strong> <?php echo $inmate['kims_id']; ?></div>
                         <div><strong>STATUS:</strong> <span style="color: #1a73e8; font-weight: bold;"><?php echo strtoupper($inmate['status']); ?></span></div>
+                    </div>
+
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ddd;">
+                        <form action="update_offence.php" method="POST" 
+                              onsubmit="return confirm('WARNING: You are about to officially change the legal charge for this inmate in the KIMS database. Do you wish to proceed?');"
+                              style="display: flex; align-items: center; gap: 15px;">
+                            <input type="hidden" name="inmate_id" value="<?php echo $inmate['inmate_id']; ?>">
+                            <input type="hidden" name="kims_id" value="<?php echo $inmate['kims_id']; ?>">
+                            
+                            <label style="font-size: 11px; font-weight: bold; color: #555;">AMEND CHARGE:</label>
+                            
+                            <select name="new_offence" class="crime-select" required>
+                                <option value="">-- Select Verified Offence (Penal Code) --</option>
+                                
+                                <optgroup label="Offences Against Persons">
+                                    <option value="Murder" <?php if($inmate['offence_category'] == 'Murder') echo 'selected'; ?>>Murder</option>
+                                    <option value="Attempted Murder" <?php if($inmate['offence_category'] == 'Attempted Murder') echo 'selected'; ?>>Attempted Murder</option>
+                                    <option value="Manslaughter" <?php if($inmate['offence_category'] == 'Manslaughter') echo 'selected'; ?>>Manslaughter</option>
+                                    <option value="Assault causing GH" <?php if($inmate['offence_category'] == 'Assault causing GH') echo 'selected'; ?>>Assault causing Grievous Harm</option>
+                                    <option value="Common Assault" <?php if($inmate['offence_category'] == 'Common Assault') echo 'selected'; ?>>Common Assault</option>
+                                    <option value="Threatening Violence" <?php if($inmate['offence_category'] == 'Threatening Violence') echo 'selected'; ?>>Threatening Violence</option>
+                                    <option value="Kidnapping / Abduction" <?php if($inmate['offence_category'] == 'Kidnapping / Abduction') echo 'selected'; ?>>Kidnapping / Abduction</option>
+                                    <option value="Affray" <?php if($inmate['offence_category'] == 'Affray') echo 'selected'; ?>>Affray (Public Fighting)</option>
+                                </optgroup>
+
+                                <optgroup label="Sexual Offences">
+                                    <option value="Defilement" <?php if($inmate['offence_category'] == 'Defilement') echo 'selected'; ?>>Defilement</option>
+                                    <option value="Rape" <?php if($inmate['offence_category'] == 'Rape') echo 'selected'; ?>>Rape</option>
+                                    <option value="Attempted Rape" <?php if($inmate['offence_category'] == 'Attempted Rape') echo 'selected'; ?>>Attempted Rape</option>
+                                    <option value="Sexual Assault" <?php if($inmate['offence_category'] == 'Sexual Assault') echo 'selected'; ?>>Sexual Assault</option>
+                                    <option value="Indecent Act" <?php if($inmate['offence_category'] == 'Indecent Act') echo 'selected'; ?>>Indecent Act</option>
+                                    <option value="Incest" <?php if($inmate['offence_category'] == 'Incest') echo 'selected'; ?>>Incest</option>
+                                    <option value="Sodomy" <?php if($inmate['offence_category'] == 'Sodomy') echo 'selected'; ?>>Unnatural Offences (Sodomy)</option>
+                                </optgroup>
+
+                                <optgroup label="Offences Against Property">
+                                    <option value="Robbery with Violence" <?php if($inmate['offence_category'] == 'Robbery with Violence') echo 'selected'; ?>>Robbery with Violence</option>
+                                    <option value="Simple Robbery" <?php if($inmate['offence_category'] == 'Simple Robbery') echo 'selected'; ?>>Simple Robbery</option>
+                                    <option value="Burglary" <?php if($inmate['offence_category'] == 'Burglary') echo 'selected'; ?>>Burglary (Night)</option>
+                                    <option value="House Breaking" <?php if($inmate['offence_category'] == 'House Breaking') echo 'selected'; ?>>House Breaking (Day)</option>
+                                    <option value="Theft of Motor Vehicle" <?php if($inmate['offence_category'] == 'Theft of Motor Vehicle') echo 'selected'; ?>>Theft of Motor Vehicle</option>
+                                    <option value="Stealing by Servant" <?php if($inmate['offence_category'] == 'Stealing by Servant') echo 'selected'; ?>>Stealing by Servant</option>
+                                    <option value="General Stealing" <?php if($inmate['offence_category'] == 'General Stealing') echo 'selected'; ?>>General Stealing</option>
+                                    <option value="Stock Theft" <?php if($inmate['offence_category'] == 'Stock Theft') echo 'selected'; ?>>Stock Theft (Cattle)</option>
+                                    <option value="Handling Stolen Goods" <?php if($inmate['offence_category'] == 'Handling Stolen Goods') echo 'selected'; ?>>Handling Stolen Property</option>
+                                    <option value="Arson" <?php if($inmate['offence_category'] == 'Arson') echo 'selected'; ?>>Arson (Setting Fire)</option>
+                                    <option value="Malicious Damage" <?php if($inmate['offence_category'] == 'Malicious Damage') echo 'selected'; ?>>Malicious Damage to Property</option>
+                                </optgroup>
+
+                                <optgroup label="Economic & Fraud Offences">
+                                    <option value="Obtaining by False Pretences" <?php if($inmate['offence_category'] == 'Obtaining by False Pretences') echo 'selected'; ?>>Obtaining by False Pretences</option>
+                                    <option value="Forgery" <?php if($inmate['offence_category'] == 'Forgery') echo 'selected'; ?>>Forgery</option>
+                                    <option value="Uttering False Documents" <?php if($inmate['offence_category'] == 'Uttering False Documents') echo 'selected'; ?>>Uttering False Documents</option>
+                                    <option value="Money Laundering" <?php if($inmate['offence_category'] == 'Money Laundering') echo 'selected'; ?>>Money Laundering</option>
+                                    <option value="Conspiracy to Defraud" <?php if($inmate['offence_category'] == 'Conspiracy to Defraud') echo 'selected'; ?>>Conspiracy to Defraud</option>
+                                    <option value="Cyber Crime" <?php if($inmate['offence_category'] == 'Cyber Crime') echo 'selected'; ?>>Cyber Crime Act</option>
+                                </optgroup>
+
+                                <optgroup label="Drug & Narcotics Offences">
+                                    <option value="Trafficking Narcotics" <?php if($inmate['offence_category'] == 'Trafficking Narcotics') echo 'selected'; ?>>Trafficking in Narcotics</option>
+                                    <option value="Possession of Narcotics" <?php if($inmate['offence_category'] == 'Possession of Narcotics') echo 'selected'; ?>>Possession of Narcotics</option>
+                                    <option value="Cultivation of Bhang" <?php if($inmate['offence_category'] == 'Cultivation of Bhang') echo 'selected'; ?>>Cultivation of Forbidden Plants</option>
+                                </optgroup>
+
+                                <optgroup label="Public Order & State">
+                                    <option value="Treason" <?php if($inmate['offence_category'] == 'Treason') echo 'selected'; ?>>Treason</option>
+                                    <option value="Incitement to Violence" <?php if($inmate['offence_category'] == 'Incitement to Violence') echo 'selected'; ?>>Incitement to Violence</option>
+                                    <option value="Terrorism" <?php if($inmate['offence_category'] == 'Terrorism') echo 'selected'; ?>>Terrorism Related</option>
+                                    <option value="Escaping from Custody" <?php if($inmate['offence_category'] == 'Escaping from Custody') echo 'selected'; ?>>Escaping Lawful Custody</option>
+                                    <option value="Bribery" <?php if($inmate['offence_category'] == 'Bribery') echo 'selected'; ?>>Bribery / Corruption</option>
+                                </optgroup>
+
+                                <optgroup label="Miscellaneous">
+                                    <option value="Possession of Firearm" <?php if($inmate['offence_category'] == 'Possession of Firearm') echo 'selected'; ?>>Illegal Possession of Firearm</option>
+                                    <option value="Wildlife Crimes" <?php if($inmate['offence_category'] == 'Wildlife Crimes') echo 'selected'; ?>>Poaching / Wildlife Crimes</option>
+                                    <option value="Other Felony" <?php if($inmate['offence_category'] == 'Other Felony') echo 'selected'; ?>>Other Felony</option>
+                                    <option value="Other Misdemeanor" <?php if($inmate['offence_category'] == 'Other Misdemeanor') echo 'selected'; ?>>Other Misdemeanor</option>
+                                </optgroup>
+                            </select>
+                            
+                            <button type="submit" class="btn-amend">UPDATE LEGAL CHARGE</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -146,8 +238,8 @@ if (isset($_GET['search_id'])) {
                                         <td style="font-size: 11px; color: #666;"><?php echo htmlspecialchars($h['remarks'] ?? 'No detail provided'); ?></td>
                                         <td style="text-align: center;">
                                             <a href="delete_record.php?type=court&id=<?php echo $h['record_id']; ?>"
-                                               class="btn-action btn-delete" 
-                                               onclick="return confirm('WARNING: Are you sure you want to remove this official court entry?');">PURGE
+                                               style="color: #d32f2f; font-size: 11px; font-weight: bold; text-decoration: none;"
+                                               onclick="return confirm('WARNING: Are you sure you want to remove this official court entry?');">[ PURGE ]
                                             </a>
                                         </td>
                                     </tr>

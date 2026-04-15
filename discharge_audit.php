@@ -74,7 +74,7 @@ $result = $conn->query($sql);
                                 <form action="process_discharge.php" method="POST">
                                     <input type="hidden" name="inmate_id" value="<?php echo $row['inmate_id']; ?>">
                                     <label style="display:block; font-size: 10px; font-weight: bold; margin-bottom: 3px;">AUTHORIZED BY:</label>
-                                    <input type="text" name="authorized_by" value="<?php echo htmlspecialchars($_SESSION['full_name'] ?? ''); ?>" required style="width: 100%; padding: 5px; margin-bottom: 10px; border: 1px solid #ccc; font-size: 12px;">
+                                    <input type="text" name="authorized_by" value="<?php echo htmlspecialchars($_SESSION['full_name'] ?? $_SESSION['username']); ?>" readonly required style="width: 100%; padding: 5px; margin-bottom: 10px; border: 1px solid #ddd; background: #f9f9f9; font-size: 12px; color: #555;">
                                     <button type="submit" class="btn-primary" style="background: #2e7d32;" onclick="return confirm('Are you sure you want to release <?php echo htmlspecialchars($row['full_name']); ?> (KIMS ID: <?php echo htmlspecialchars($row['kims_id']); ?>)? This action will mark the inmate as \'Released\' and cannot be easily undone.');">PROCESS RELEASE</button>
                                 </form>
                             </td>

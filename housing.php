@@ -46,6 +46,21 @@ if (isset($_GET['search_id'])) {
             margin-top: 100px; text-align: center; border: 2px dashed #ccc; 
             padding: 80px; color: #888; border-radius: 8px; 
         }
+        .profile-photo-container {
+            width: 140px; 
+            height: 160px; 
+            background: #f0f0f0; 
+            border: 2px solid #ddd; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden;
+        }
+        .profile-photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
@@ -76,8 +91,20 @@ if (isset($_GET['search_id'])) {
 
             <?php if ($inmate): ?>
             
-            <div class="profile-summary">
-                <div class="profile-photo">MUGSHOT</div>
+            <div class="profile-summary" style="display: flex; gap: 20px; background: #fff; border: 1px solid #ddd; padding: 20px; margin-top: 20px;">
+                <div class="profile-photo-container">
+                    <?php 
+                        $photo_filename = !empty($inmate['photo_url']) ? $inmate['photo_url'] : 'default.png';
+                        $photo_path = "uploads/" . $photo_filename;
+                        
+                        if (file_exists($photo_path)) {
+                            echo '<img src="' . $photo_path . '" alt="Subject Mugshot">';
+                        } else {
+                            echo '<div style="font-size: 10px; color: #999; text-align: center;">IMAGE NOT<br>FOUND</div>';
+                        }
+                    ?>
+                </div>
+
                 <div style="flex-grow: 1;">
                     <div class="section-header" style="margin-top:0;">1. Subject Location Details</div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; font-size: 13px;">

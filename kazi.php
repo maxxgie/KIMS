@@ -18,6 +18,9 @@ if (isset($_GET['search_id'])) {
         $total_hours = $inmate['total_hrs'] ?? 0;
     }
 }
+
+// Fetch registered staff members (Instructors/Wardens) to populate the supervisor dropdown
+$staff_list = $conn->query("SELECT username, full_name FROM users ORDER BY full_name ASC");
 ?>
 
 <!DOCTYPE html>
@@ -125,8 +128,16 @@ if (isset($_GET['search_id'])) {
                             <input type="date" name="log_date" value="<?php echo date('Y-m-d'); ?>" required>
                         </div>
                         <div class="form-group">
-                            <label>INSTRUCTOR ID (SERVICE NO.)</label>
-                            <input type="text" name="instructor_id" placeholder="e.g. 124567" required>
+                            <label>INSTRUCTOR / SUPERVISOR</label>
+                            <select name="instructor_id" required>
+                                <option value="">-- Select Instructor --</option>
+                                <?php while($staff = $staff_list->fetch_assoc()): ?>
+                                    <?php $selected = ($_SESSION['username'] == $staff['username']) ? 'selected' : ''; ?>
+                                    <option value="<?php echo htmlspecialchars($staff['username']); ?>" <?php echo $selected; ?>>
+                                        <?php echo htmlspecialchars($staff['full_name']); ?> (<?php echo htmlspecialchars($staff['username']); ?>)
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
                         </div>
                         
                         <div class="full-width">

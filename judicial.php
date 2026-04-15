@@ -133,6 +133,8 @@ if (isset($_GET['search_id'])) {
                         <div><strong>NAME:</strong> <?php echo strtoupper($inmate['full_name']); ?></div>
                         <div><strong>KIMS-ID:</strong> <?php echo $inmate['kims_id']; ?></div>
                         <div><strong>STATUS:</strong> <span style="color: #1a73e8; font-weight: bold;"><?php echo strtoupper($inmate['status']); ?></span></div>
+                        <div><strong>CURRENT SENTENCE:</strong> <?php echo number_format($inmate['sentence_years'], 2); ?> Years</div>
+                        <div><strong>CURRENT EDD:</strong> <span style="color: #d32f2f; font-weight: bold;"><?php echo date('d-m-Y', strtotime($inmate['edd'])); ?></span></div>
                     </div>
 
                     <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ddd;">
@@ -251,7 +253,32 @@ if (isset($_GET['search_id'])) {
                     </div>
                 </section>
 
-                <section>
+                <section style="display: flex; flex-direction: column; gap: 20px;">
+                    <div class="section-header" style="margin-top:0;">4. Sentence Management & Remission</div>
+                    <div class="judicial-form" style="background: #fff; border: 1px solid #ddd; padding: 20px;">
+                        <!-- Manual Adjustment -->
+                        <form action="update_sentence.php" method="POST" style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee;">
+                            <input type="hidden" name="inmate_id" value="<?php echo $inmate['inmate_id']; ?>">
+                            <input type="hidden" name="kims_id" value="<?php echo $inmate['kims_id']; ?>">
+                            <label style="display:block; font-size: 11px; font-weight: bold; margin-bottom: 5px;">MANUAL SENTENCE ADJUSTMENT (YEARS)</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="number" name="sentence_years" step="0.1" value="<?php echo $inmate['sentence_years']; ?>" required style="flex-grow: 1; padding: 8px; border: 1px solid #ccc;">
+                                <button type="submit" class="btn-primary" style="background: #555;">UPDATE YEARS</button>
+                            </div>
+                        </form>
+
+                        <!-- Quick Remission Action -->
+                        <div style="background: #f1f8e9; padding: 15px; border: 1px solid #c8e6c9; border-radius: 4px;">
+                            <h4 style="margin: 0 0 5px 0; font-size: 12px; color: #2e7d32;">Apply Standard Remission (1/3 Reduction)</h4>
+                            <p style="font-size: 11px; color: #666; margin-bottom: 10px;">Automatically reduces the remaining sentence by one-third for good discipline.</p>
+                            <form action="apply_remission.php" method="POST" onsubmit="return confirm('Confirm Remission: This will reduce the sentence from <?php echo $inmate['sentence_years']; ?> years to <?php echo number_format($inmate['sentence_years'] * (2/3), 2); ?> years. Proceed?');">
+                                <input type="hidden" name="inmate_id" value="<?php echo $inmate['inmate_id']; ?>">
+                                <input type="hidden" name="kims_id" value="<?php echo $inmate['kims_id']; ?>">
+                                <button type="submit" class="btn-primary" style="width: 100%; background: #2e7d32; border: none;">AUTHORIZE 1/3 REMISSION</button>
+                            </form>
+                        </div>
+                    </div>
+
                     <div class="section-header">3. Judicial History Transcript</div>
                     <table class="report-table">
                         <thead>

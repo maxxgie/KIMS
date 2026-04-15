@@ -46,7 +46,7 @@ switch ($type) {
     default:
         $type = 'court'; 
         $reportTitle = "Upcoming Court Schedule";
-        $sql = "SELECT i.kims_id, i.full_name, c.court_name, c.next_hearing_date as hearing_date, c.remarks 
+        $sql = "SELECT i.kims_id, i.full_name, c.court_name, c.next_hearing_date as hearing_date, c.remarks, c.zoom_link 
                 FROM inmates i 
                 INNER JOIN court_records c ON i.inmate_id = c.inmate_id 
                 ORDER BY c.next_hearing_date ASC";
@@ -151,6 +151,7 @@ $resultData = $conn->query($sql);
                                 <th>KIMS-ID</th>
                                 <th>Court Location</th>
                                 <th>Remarks</th>
+                                <th>Virtual Link</th>
                             </tr>
                         <?php endif; ?>
                     </thead>
@@ -185,7 +186,8 @@ $resultData = $conn->query($sql);
                                 } 
                                 else {
                                     $formattedDate = date('d/m/Y', strtotime($row['hearing_date']));
-                                    echo "<tr><td>$formattedDate</td><td>{$row['full_name']}</td><td>{$row['kims_id']}</td><td>{$row['court_name']}</td><td>{$row['remarks']}</td></tr>";
+                                    $zoom = !empty($row['zoom_link']) ? "<a href='{$row['zoom_link']}' target='_blank' style='color:#1a73e8;'>Join</a>" : "N/A";
+                                    echo "<tr><td>$formattedDate</td><td>{$row['full_name']}</td><td>{$row['kims_id']}</td><td>{$row['court_name']}</td><td>{$row['remarks']}</td><td>$zoom</td></tr>";
                                 }
                             }
                         } else {

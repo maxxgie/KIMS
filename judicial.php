@@ -241,6 +241,11 @@ if (isset($_GET['search_id'])) {
                                 <textarea name="remarks" placeholder="Mention, Bail Application, etc." style="width: 100%; height: 80px; padding: 10px; border: 1px solid #ccc; font-size: 12px;"></textarea>
                             </div>
                             
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <label style="display:block; font-size: 11px; font-weight: bold; margin-bottom: 5px;">VIRTUAL MENTION LINK (OPTIONAL)</label>
+                                <input type="url" name="zoom_link" placeholder="e.g. https://zoom.us/j/1234567890" style="width:100%; padding:10px; border: 1px solid #ccc;">
+                            </div>
+                            
                             <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; font-weight: bold;">COMMIT TO LEGAL LOGS</button>
                         </form>
                     </div>
@@ -254,6 +259,7 @@ if (isset($_GET['search_id'])) {
                                 <th>Hearing Date</th>
                                 <th>Court Location</th>
                                 <th>Remarks</th>
+                                <th>Zoom Link</th>
                                 <th style="text-align: center;">Action</th>
                             </tr>
                         </thead>
@@ -265,7 +271,14 @@ if (isset($_GET['search_id'])) {
                                     <tr class="<?php echo $isToday ? 'highlight-today' : ''; ?>">
                                         <td><strong><?php echo date('d-m-Y', strtotime($h['next_hearing_date'])); ?></strong></td>
                                         <td><?php echo htmlspecialchars($h['court_name']); ?></td>
-                                        <td style="font-size: 11px; color: #666;"><?php echo htmlspecialchars($h['remarks'] ?? 'No detail provided'); ?></td>
+                                        <td style="font-size: 11px; color: #666;"><?php echo htmlspecialchars($h['remarks'] ?? 'No details provided'); ?></td>
+                                        <td>
+                                            <?php if (!empty($h['zoom_link'])): ?>
+                                                <a href="<?php echo htmlspecialchars($h['zoom_link']); ?>" target="_blank" style="color: #1a73e8; text-decoration: none; font-size: 11px;">Join Meeting</a>
+                                            <?php else: ?>
+                                                N/A
+                                            <?php endif; ?>
+                                        </td>
                                         <td style="text-align: center;">
                                             <a href="delete_record.php?type=court&id=<?php echo $h['record_id']; ?>"
                                                style="color: #d32f2f; font-size: 11px; font-weight: bold; text-decoration: none;"
@@ -275,7 +288,7 @@ if (isset($_GET['search_id'])) {
                                     </tr>
                                 <?php endwhile; ?>
                             <?php else: ?>
-                                <tr><td colspan="4" style="text-align:center; padding: 40px; color: #999;">No judicial history found for this subject.</td></tr>
+                                <tr><td colspan="5" style="text-align:center; padding: 40px; color: #999;">No judicial history found for this subject.</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>

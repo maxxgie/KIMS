@@ -6,9 +6,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $court_name = mysqli_real_escape_string($conn, $_POST['court_name']);
     $hearing_date = $_POST['hearing_date'];
     $remarks = mysqli_real_escape_string($conn, $_POST['remarks']);
+    $zoom_link = mysqli_real_escape_string($conn, $_POST['zoom_link']);
 
-    $sql = "INSERT INTO court_records (inmate_id, court_name, next_hearing_date, remarks) 
-            VALUES ($inmate_id, '$court_name', '$hearing_date', '$remarks')";
+    $sql = "INSERT INTO court_records (inmate_id, court_name, next_hearing_date, remarks, zoom_link) 
+            VALUES ($inmate_id, '$court_name', '$hearing_date', '$remarks', '$zoom_link')";
 
     if ($conn->query($sql) === TRUE) {
         // Redirect back to judicial page with the inmate still selected

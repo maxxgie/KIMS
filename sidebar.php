@@ -8,6 +8,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 
         <li class="<?php echo ($current_page == 'registration.php') ? 'active' : ''; ?>" onclick="location.href='registration.php'">New Inmate</li>
         
+        <li class="<?php echo ($current_page == 'discharge_audit.php') ? 'active' : ''; ?>" onclick="location.href='discharge_audit.php'">Discharge Audit</li>
+        
         <li class="<?php echo ($current_page == 'housing.php') ? 'active' : ''; ?>" onclick="location.href='housing.php'">Housing Audit</li>
         
         <li class="<?php echo ($current_page == 'judicial.php') ? 'active' : ''; ?>" onclick="location.href='judicial.php'">Judicial Records</li>

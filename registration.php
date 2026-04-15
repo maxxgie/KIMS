@@ -178,6 +178,7 @@
                                     <select name="sentence_unit" class="unit-select">
                                         <option value="years">Years</option>
                                         <option value="months">Months</option>
+                                        <option value="days">Days</option>
                                     </select>
                                 </div>
                             </div>

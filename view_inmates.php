@@ -2,7 +2,7 @@
 include 'db_connect.php';
 
 // SQL to fetch all inmates
-$sql = "SELECT kims_id, full_name, offence_category, date_admitted, edd FROM inmates ORDER BY date_admitted DESC";
+$sql = "SELECT kims_id, full_name, offence_category, date_admitted, edd, status FROM inmates ORDER BY date_admitted DESC";
 $result = $conn->query($sql);
 ?>
 
@@ -17,7 +17,9 @@ $result = $conn->query($sql);
         .data-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
         .data-table th, .data-table td { padding: 12px; border: 1px solid #ddd; text-align: left; font-size: 13px; }
         .data-table th { background-color: #333; color: white; }
-        .status-tag { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 3px; font-weight: bold; }
+        .status-tag { padding: 4px 8px; border-radius: 3px; font-weight: bold; font-size: 11px; }
+        .status-custody { background: #e3f2fd; color: #1565c0; }
+        .status-released { background: #e8f5e9; color: #2e7d32; }
     </style>
 </head>
 <body>
@@ -52,7 +54,11 @@ $result = $conn->query($sql);
                         echo "<td>" . $row["offence_category"] . "</td>";
                         echo "<td>" . $row["date_admitted"] . "</td>";
                         echo "<td>" . $row["edd"] . "</td>";
-                        echo "<td><span class='status-tag'>Custody</span></td>";
+                        
+                        $statusClass = ($row['status'] == 'Released') ? 'status-released' : 'status-custody';
+                        $statusLabel = ($row['status'] == 'Released') ? 'RELEASED' : 'IN CUSTODY';
+                        
+                        echo "<td><span class='status-tag $statusClass'>$statusLabel</span></td>";
                         echo "</tr>";
                     }
                 } else {

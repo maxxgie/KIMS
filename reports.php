@@ -51,6 +51,14 @@ switch ($type) {
                 INNER JOIN court_records c ON i.inmate_id = c.inmate_id 
                 ORDER BY c.next_hearing_date ASC";
         break;
+
+    case 'releases':
+        $reportTitle = "Recent Inmate Releases (Last 3 Months)";
+        $sql = "SELECT kims_id, full_name, edd, offence_category, discharged_by
+                FROM inmates
+                WHERE status = 'Released' AND edd >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+                ORDER BY edd DESC";
+        break;
 }
 
 $resultData = $conn->query($sql);
@@ -102,6 +110,10 @@ $resultData = $conn->query($sql);
                     <h4>Court Schedule</h4>
                     <p>Upcoming hearings and logistics.</p>
                 </div>
+                <div class="report-card <?php echo ($type == 'releases') ? 'active' : ''; ?>" onclick="location.href='reports.php?type=releases'">
+                    <h4>Recent Releases</h4>
+                    <p>Inmates discharged in the last 3 months.</p>
+                </div>
             </div>
 
             <div class="report-preview">
@@ -144,6 +156,14 @@ $resultData = $conn->query($sql);
                                 <th>Current Pop.</th>
                                 <th>Available</th>
                             </tr>
+                        <?php elseif ($type === 'releases'): ?>
+                            <tr>
+                                <th>KIMS-ID</th>
+                                <th>Inmate Name</th>
+                                <th>Offence</th>
+                                <th>Discharge Date</th>
+                                <th>Authorized By</th>
+                            </tr>
                         <?php else: ?>
                             <tr>
                                 <th>Hearing Date</th>
@@ -184,14 +204,24 @@ $resultData = $conn->query($sql);
                                 elseif ($type === 'housing') {
                                     echo "<tr><td>{$row['section']}</td><td>{$row['class']}</td><td>{$row['cap']}</td><td>{$row['pop']}</td><td>{$row['avail']}</td></tr>";
                                 } 
+                                elseif ($type === 'releases') {
+                                    echo "<tr>
+                                            <td><strong>{$row['kims_id']}</strong></td>
+                                            <td>{$row['full_name']}</td>
+                                            <td>{$row['offence_category']}</td>
+                                            <td>" . date('d/m/Y', strtotime($row['edd'])) . "</td>
+                                            <td>{$row['discharged_by']}</td>
+                                          </tr>";
+                                }
                                 else {
                                     $formattedDate = date('d/m/Y', strtotime($row['hearing_date']));
                                     $zoom = !empty($row['zoom_link']) ? "<a href='{$row['zoom_link']}' target='_blank' style='color:#1a73e8;'>Join</a>" : "N/A";
                                     echo "<tr><td>$formattedDate</td><td>{$row['full_name']}</td><td>{$row['kims_id']}</td><td>{$row['court_name']}</td><td>{$row['remarks']}</td><td>$zoom</td></tr>";
                                 }
+
                             }
                         } else {
-                            echo "<tr><td colspan='5' style='text-align:center; padding: 30px; color: #777;'>No matching records found.</td></tr>";
+                            echo "<tr><td colspan='6' style='text-align:center; padding: 30px; color: #777;'>No matching records found.</td></tr>";
                         }
                         ?>
                     </tbody>

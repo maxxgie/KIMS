@@ -40,6 +40,7 @@ if (isset($_GET['kims_id'])) {
         .data-item span { font-size: 18px; color: #333; font-weight: 600; }
         .status-tag { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 12px; margin-top: 10px; }
         .status-active { background: #e6fffa; color: #2c7a7b; }
+        .status-released { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
         .no-print-search { margin-bottom: 20px; }
     </style>
 </head>
@@ -62,7 +63,8 @@ if (isset($_GET['kims_id'])) {
             <div class="profile-sidebar">
                 <img src="uploads/<?php echo $inmate['photo_url']; ?>" class="mugshot-large" alt="Inmate Photo">
                 <h3 style="margin-bottom:5px;"><?php echo $inmate['kims_id']; ?></h3>
-                <div class="status-tag status-active"><?php echo $inmate['status']; ?></div>
+                <?php $statusClass = ($inmate['status'] == 'Released') ? 'status-released' : 'status-active'; ?>
+                <div class="status-tag <?php echo $statusClass; ?>"><?php echo strtoupper($inmate['status']); ?></div>
                 <hr style="margin: 20px 0;">
                 <button onclick="window.print()" class="btn-secondary" style="width:100%;">Print Dossier</button>
             </div>
@@ -79,9 +81,15 @@ if (isset($_GET['kims_id'])) {
                         <span><?php echo $inmate['offence_category']; ?></span>
                     </div>
                     <div class="data-item">
-                        <label>Earliest Discharge Date (EDD)</label>
+                        <label><?php echo ($inmate['status'] == 'Released') ? 'Actual Discharge Date' : 'Earliest Discharge Date (EDD)'; ?></label>
                         <span style="color: #d32f2f;"><?php echo date('d M Y', strtotime($inmate['edd'])); ?></span>
                     </div>
+                    <?php if ($inmate['status'] == 'Released'): ?>
+                    <div class="data-item">
+                        <label>Discharge Authorized By</label>
+                        <span><?php echo htmlspecialchars($inmate['discharged_by'] ?? 'N/A'); ?></span>
+                    </div>
+                    <?php endif; ?>
                     <div class="data-item">
                         <label>Next Court Appearance</label>
                         <span><?php echo $inmate['next_court'] ? date('d M Y', strtotime($inmate['next_court'])) : 'No Dates Set'; ?></span>

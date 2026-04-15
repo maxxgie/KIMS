@@ -31,6 +31,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($sentence_unit == 'months') {
         $sentence_years = $sentence_value / 12;
         $time_diff = "+ " . (int)$sentence_value . " months";
+    } elseif ($sentence_unit == 'days') {
+        $sentence_years = $sentence_value / 365;
+        $time_diff = "+ " . (int)$sentence_value . " days";
     } else {
         $sentence_years = $sentence_value;
         $time_diff = "+ " . (int)$sentence_value . " years";

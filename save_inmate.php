@@ -40,10 +40,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $raw_block_id = isset($_POST['block_id']) ? (int)$_POST['block_id'] : 0;
     $block_id = ($raw_block_id > 0) ? $raw_block_id : "NULL";
 
-    // 2. Generate KIMS ID Automatically
+    // 2. Generate Unique KIMS ID Automatically
     $year = date("Y");
-    $random = rand(1000, 9999);
-    $kims_id = "KIMS-" . $year . "-" . $random;
+    $is_unique = false;
+    $kims_id = "";
+
+    while (!$is_unique) {
+        $random = rand(1000, 9999);
+        $kims_id = "KIMS-" . $year . "-" . $random;
+        
+        // Verify uniqueness in the database
+        $check_stmt = $conn->prepare("SELECT kims_id FROM inmates WHERE kims_id = ?");
+        $check_stmt->bind_param("s", $kims_id);
+        $check_stmt->execute();
+        if ($check_stmt->get_result()->num_rows === 0) {
+            $is_unique = true;
+        }
+    }
 
     // 3. AUTO-CALCULATE EDD (Expected Date of Discharge)
     $edd = date('Y-m-d', strtotime($admission_date . " " . $time_diff));

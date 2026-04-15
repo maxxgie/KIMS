@@ -11,10 +11,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $offence = mysqli_real_escape_string($conn, $_POST['offence']);
     $sentence = (int)$_POST['sentence_years'];
 
-    // Generate a unique KIMS-ID (e.g., KIMS-2026-XXXX)
+    // Generate a unique KIMS-ID
     $year = date("Y");
-    $random_num = rand(1000, 9999);
-    $kims_id = "KIMS-" . $year . "-" . $random_num;
+    $is_unique = false;
+    $kims_id = "";
+
+    while (!$is_unique) {
+        $random_num = rand(1000, 9999);
+        $kims_id = "KIMS-" . $year . "-" . $random_num;
+
+        // Verify uniqueness in the database
+        $check_stmt = $conn->prepare("SELECT kims_id FROM inmates WHERE kims_id = ?");
+        $check_stmt->bind_param("s", $kims_id);
+        $check_stmt->execute();
+        if ($check_stmt->get_result()->num_rows === 0) {
+            $is_unique = true;
+        }
+    }
 
     // Calculate EDD (Earliest Date of Discharge) - Simple logic adding years
     $edd = date('Y-m-d', strtotime($admission_date . " + $sentence years"));

@@ -62,6 +62,23 @@ if (isset($_GET['search_id'])) {
             padding: 8px; border: 1px solid #ccc; width: 450px; 
             font-size: 13px; background: #fffde7;
         }
+
+        /* Styles for the mugshot container */
+        .profile-photo-container {
+            width: 140px; 
+            height: 160px; 
+            background: #f0f0f0; 
+            border: 2px solid #ddd; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden;
+        }
+        .profile-photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
@@ -96,7 +113,20 @@ if (isset($_GET['search_id'])) {
             <?php if ($inmate): ?>
             
             <div class="profile-summary" style="display: flex; gap: 20px; background: #fff; border: 1px solid #ddd; padding: 20px; margin-top: 20px;">
-                <div class="profile-photo" style="width: 100px; height: 100px; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999; border: 1px solid #ccc;">MUGSHOT</div>
+                
+                <div class="profile-photo-container">
+                    <?php 
+                        $photo_filename = !empty($inmate['photo_url']) ? $inmate['photo_url'] : 'default.png';
+                        $photo_path = "uploads/" . $photo_filename;
+                        
+                        if (file_exists($photo_path)) {
+                            echo '<img src="'.$photo_path.'" alt="Subject Mugshot">';
+                        } else {
+                            echo '<div style="font-size: 10px; color: #999; text-align: center;">IMAGE NOT<br>FOUND</div>';
+                        }
+                    ?>
+                </div>
+
                 <div style="flex-grow: 1;">
                     <div class="section-header" style="margin-top:0;">1. Subject Information</div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; font-size: 13px;">

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="registration.css">
     <style>
         /* Ensuring select consistency with your existing form design */
-        select.crime-select {
+        select.crime-select, .unit-select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -24,6 +24,17 @@
             font-weight: bold;
             display: block;
             margin-top: 4px;
+        }
+        /* New styles for the flexible sentence input */
+        .sentence-input-group {
+            display: flex;
+            gap: 5px;
+        }
+        .sentence-input-group input {
+            flex: 2;
+        }
+        .sentence-input-group select {
+            flex: 1;
         }
     </style>
 </head>
@@ -52,10 +63,19 @@
                                 <label>FULL NAME</label>
                                 <input type="text" name="full_name" placeholder="First Middle Last" required>
                             </div>
+
                             <div class="form-group">
-                                <label>NATIONAL ID / ALIAS</label>
-                                <input type="text" name="id_number">
+                                <label>NATIONAL ID</label>
+                                <input type="text" 
+                                       name="id_number" 
+                                       maxlength="9" 
+                                       pattern="\d{1,9}" 
+                                       title="National ID must be numeric and not exceed 9 digits" 
+                                       placeholder="Max 9 digits" 
+                                       required>
+                                <span class="restriction-note">* Maximum 9 digits allowed.</span>
                             </div>
+
                             <div class="form-group">
                                 <label>DATE OF BIRTH</label>
                                 <?php $adult_cutoff = date('Y-m-d', strtotime('-18 years')); ?>
@@ -150,10 +170,18 @@
                                     </optgroup>
                                 </select>
                             </div>
+
                             <div class="form-group">
-                                <label>SENTENCE (YEARS)</label>
-                                <input type="number" name="sentence_years" min="0" required>
+                                <label>SENTENCE DURATION</label>
+                                <div class="sentence-input-group">
+                                    <input type="number" name="sentence_value" min="1" placeholder="Amount" required>
+                                    <select name="sentence_unit" class="unit-select">
+                                        <option value="years">Years</option>
+                                        <option value="months">Months</option>
+                                    </select>
+                                </div>
                             </div>
+
                             <div class="form-group">
                                 <label>COURT OF COMMITTAL</label>
                                 <input type="text" name="court_name" placeholder="e.g. Nyeri Law Courts">
@@ -181,7 +209,6 @@
             const dob = new Date(this.value);
             const today = new Date();
             
-            // Calculate age precisely
             let age = today.getFullYear() - dob.getFullYear();
             const monthDiff = today.getMonth() - dob.getMonth();
             if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
@@ -189,8 +216,8 @@
             }
 
             if (age < 18) {
-                alert("REGISTRATION BLOCKED: This inmate is " + age + " years old. KIMS is an adult correctional facility. Please refer juveniles to the appropriate Youth Correction Center.");
-                this.value = ''; // Reset the date field
+                alert("REGISTRATION BLOCKED: This inmate is " + age + " years old. KIMS is an adult correctional facility.");
+                this.value = ''; 
             }
         });
     </script>

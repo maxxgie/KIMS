@@ -8,9 +8,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $dob = mysqli_real_escape_string($conn, $_POST['dob']);
     $gender = mysqli_real_escape_string($conn, $_POST['gender']);
     $offence = mysqli_real_escape_string($conn, $_POST['offence']);
-    $sentence = mysqli_real_escape_string($conn, $_POST['sentence_years']); // This is the years
     $court = mysqli_real_escape_string($conn, $_POST['court_name']);
     $admission_date = mysqli_real_escape_string($conn, $_POST['admission_date']);
+
+    // --- NEW VALIDATION: 9-Digit ID Restriction ---
+    // Remove any accidental spaces
+    $id_number = trim($id_number);
+    
+    if (!ctype_digit($id_number)) {
+        die("Error: National ID must contain only numbers.");
+    }
+    if (strlen($id_number) > 9) {
+        die("Error: National ID cannot exceed 9 digits. You entered " . strlen($id_number) . " digits.");
+    }
+    // ----------------------------------------------
+
+    // Capture Duration and Unit
+    $sentence_value = (float)$_POST['sentence_value'];
+    $sentence_unit = $_POST['sentence_unit'];
+
+    // Convert to years for the 'sentence_years' column and prepare date math
+    if ($sentence_unit == 'months') {
+        $sentence_years = $sentence_value / 12;
+        $time_diff = "+ " . (int)$sentence_value . " months";
+    } else {
+        $sentence_years = $sentence_value;
+        $time_diff = "+ " . (int)$sentence_value . " years";
+    }
 
     // Use NULL if block_id is 0 or empty to prevent Foreign Key errors
     $raw_block_id = isset($_POST['block_id']) ? (int)$_POST['block_id'] : 0;
@@ -21,9 +45,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $random = rand(1000, 9999);
     $kims_id = "KIMS-" . $year . "-" . $random;
 
-    // 3. AUTO-CALCULATE EDD (Earliest Discharge Date)
-    // We add the sentence years to the admission date
-    $edd = date('Y-m-d', strtotime($admission_date . " + $sentence years"));
+    // 3. AUTO-CALCULATE EDD (Expected Date of Discharge)
+    $edd = date('Y-m-d', strtotime($admission_date . " " . $time_diff));
 
     // 4. Handle Mugshot Upload
     $photo_name = "default.png"; 
@@ -39,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         move_uploaded_file($_FILES['inmate_photo']['tmp_name'], $target);
     }
 
-    // 5. Insert into Database (NOW INCLUDING sentence_years and edd)
+    // 5. Insert into Database
     $sql = "INSERT INTO inmates (
                 kims_id, 
                 full_name, 
@@ -60,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 '$dob', 
                 '$gender', 
                 '$offence', 
-                '$sentence', 
+                '$sentence_years', 
                 $block_id,
                 '$edd', 
                 '$admission_date', 

@@ -44,6 +44,8 @@ KIMS is a specialized web-based management platform designed for correctional fa
     *   Start MySQL via XAMPP (ensure port 3307 is active or update `db_connect.php`).
     *   Create a database named `kims`.
     - Import the provided SQL schema (ensure inmates, users, court_records, training_logs, cell_blocks, sentence_updates, and offence_updates tables are created).
+    * Database file export containing all commands is already in this Project root folder named as
+     "kims (2).sql"
 
 3.  Configuration:
     Verify connection strings in `db_connect.php`:
@@ -57,6 +59,8 @@ KIMS is a specialized web-based management platform designed for correctional fa
 
 4.  Directory Permissions:
     Ensure the `uploads/` directory exists and is writable by the web server for mugshot storage.
+
+
 
 ## Security Configuration
 

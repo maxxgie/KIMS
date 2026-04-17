@@ -134,7 +134,7 @@ if (isset($_GET['search_id'])) {
                                 </option>
                             <?php endwhile; ?>
                         </select>
-                        <p style="font-size: 10px; color: #777; margin-top: 5px;">* Current assigned block is disabled to prevent redundant transfers.</p>
+                        <p style="font-size: 10px; color: #777; margin-top: 5px;">Current assigned block is disabled to prevent redundant transfers.</p>
                     </div>
 
                     <div class="full-width" style="margin-top: 10px;">

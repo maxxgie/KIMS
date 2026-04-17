@@ -16,8 +16,8 @@ $release_alerts = $conn->query("SELECT inmate_id, full_name, kims_id, edd FROM i
 // Alerts Logic: Parole Eligibility
 $parole_alerts_query = "SELECT inmate_id, full_name, kims_id, date_admitted, sentence_years, edd
                         FROM inmates 
-                        WHERE status = 'In Custody' AND sentence_years > 1 
-                        AND DATE_ADD(date_admitted, INTERVAL (sentence_years / 2) YEAR) <= '$today'";
+                        WHERE status = 'In Custody' 
+                        AND DATEDIFF('$today', date_admitted) >= (DATEDIFF(edd, date_admitted) / 2)";
 $parole_alerts = $conn->query($parole_alerts_query);
 
 ?>
@@ -69,6 +69,12 @@ $parole_alerts = $conn->query($parole_alerts_query);
                 <div style="font-size: 12px; color: #666;">Server Date: <strong><?php echo date('d M Y'); ?></strong></div>
             </div>
 
+            <?php if (isset($_GET['status']) && $_GET['status'] == 'review_started'): ?>
+                <div style="background: #fff3e0; color: #e65100; padding: 15px; margin-top: 20px; border: 1px solid #ffe0b2; font-size: 13px; font-weight: bold;">
+                    ➔ Parole Review Process has been formally initiated for KIMS-ID: <?php echo htmlspecialchars($_GET['id']); ?>. A record has been added to the Judicial Transcript.
+                </div>
+            <?php endif; ?>
+
             <div class="section-header-bar" style="border-left-color: #d32f2f;">
                 <span style="color: #d32f2f;">⚠</span> Judicial Alerts (Next 48 Hours)
             </div>
@@ -87,7 +93,7 @@ $parole_alerts = $conn->query($parole_alerts_query);
                         <?php while($ca = $court_alerts->fetch_assoc()): ?>
                             <tr>
                                 <td><strong><?php echo date('d-m-Y', strtotime($ca['next_hearing_date'])); ?></strong></td>
-                               - <td><?php echo strtoupper($ca['full_name']); ?><br><small style="color:#888;"><?php echo $ca['kims_id']; ?></small></td>
+                                <td><?php echo strtoupper($ca['full_name']); ?><br><small style="color:#888;"><?php echo $ca['kims_id']; ?></small></td>
                                 <td><?php echo $ca['court_name']; ?></td>
                                 <td><span class="alert-badge badge-urgent">Immediate Escort</span></td>
                                 <td><a href="judicial.php?search_id=<?php echo $ca['kims_id']; ?>" class="btn-action btn-view">LOGISTICS</a></td>
@@ -147,8 +153,14 @@ $parole_alerts = $conn->query($parole_alerts_query);
                                 <td><?php echo strtoupper($pa['full_name']); ?></td>
                                 <td><?php echo $pa['kims_id']; ?></td>
                                 <td><strong style="color: #f57c00;">ELIGIBLE</strong></td>
-                                <td><a href="kazi.php?search_id=<?php echo $pa['kims_id']; ?>" class="btn-action">VIEW LOGS</a></td>
-                                <td><button class="btn-action btn-view">INITIATE REVIEW</button></td>
+                                <td><a href="kazi.php?search_id=<?php echo $pa['kims_id']; ?>" class="btn-action" style="text-decoration:none;">VIEW LOGS</a></td>
+                                <td>
+                                    <form action="initiate_parole_review.php" method="POST" style="display:inline;">
+                                        <input type="hidden" name="inmate_id" value="<?php echo $pa['inmate_id']; ?>">
+                                        <input type="hidden" name="kims_id" value="<?php echo $pa['kims_id']; ?>">
+                                        <button type="submit" class="btn-action btn-view" style="cursor:pointer; border:none;" onclick="return confirm('OFFICIAL ACTION: Are you sure you want to formally initiate a Parole Board Review for <?php echo htmlspecialchars($pa['full_name']); ?>?');">INITIATE REVIEW</button>
+                                    </form>
+                                </td>
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>

@@ -54,7 +54,7 @@ if (isset($_GET['search_id'])) {
 
         .btn-amend {
             padding: 6px 15px; background: #333; color: white; border: none; 
-            cursor: pointer; font-size: 11px; font-weight: bold; transition: background 0.2s;
+            cursor: pointer; font-size: 11px; font-weight: bold;
         }
         .btn-amend:hover { background: #000; }
         
@@ -260,10 +260,15 @@ if (isset($_GET['search_id'])) {
                         <form action="update_sentence.php" method="POST" style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee;">
                             <input type="hidden" name="inmate_id" value="<?php echo $inmate['inmate_id']; ?>">
                             <input type="hidden" name="kims_id" value="<?php echo $inmate['kims_id']; ?>">
-                            <label style="display:block; font-size: 11px; font-weight: bold; margin-bottom: 5px;">MANUAL SENTENCE ADJUSTMENT (YEARS)</label>
+                            <label style="display:block; font-size: 11px; font-weight: bold; margin-bottom: 5px;">MANUAL SENTENCE ADJUSTMENT</label>
                             <div style="display: flex; gap: 10px;">
-                                <input type="number" name="sentence_years" step="0.1" value="<?php echo $inmate['sentence_years']; ?>" required style="flex-grow: 1; padding: 8px; border: 1px solid #ccc;">
-                                <button type="submit" class="btn-primary" style="background: #555;">UPDATE YEARS</button>
+                                <input type="number" name="sentence_value" step="0.1" value="<?php echo $inmate['sentence_years']; ?>" required style="flex-grow: 2; padding: 8px; border: 1px solid #ccc;">
+                                <select name="sentence_unit" style="flex-grow: 1; padding: 8px; border: 1px solid #ccc;">
+                                    <option value="years" selected>Years</option>
+                                    <option value="months">Months</option>
+                                    <option value="days">Days</option>
+                                </select>
+                                <button type="submit" class="btn-primary" style="background: #555; white-space: nowrap;">UPDATE SENTENCE</button>
                             </div>
                         </form>
 

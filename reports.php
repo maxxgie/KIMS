@@ -17,6 +17,15 @@ switch ($type) {
                 ORDER BY u.update_date DESC";
         break;
 
+    case 'sentence_revisions':
+        $reportTitle = "Sentence Adjustment Audit";
+        // Logic: Track manual changes to inmate sentence lengths
+        $sql = "SELECT i.kims_id, i.full_name, s.old_years, s.new_years, s.update_date, s.updated_by 
+                FROM sentence_updates s 
+                INNER JOIN inmates i ON s.inmate_id = i.inmate_id 
+                ORDER BY s.update_date DESC";
+        break;
+
     case 'crime':
         $reportTitle = "Crime Distribution & Trends";
         $sql = "SELECT offence_category, COUNT(*) as total_inmates, MAX(date_admitted) as last_update 
@@ -98,6 +107,10 @@ $resultData = $conn->query($sql);
                     <h4>Charge Revisions</h4>
                     <p>Track updates from original to amended crimes.</p>
                 </div>
+                <div class="report-card <?php echo ($type == 'sentence_revisions') ? 'active' : ''; ?>" onclick="location.href='reports.php?type=sentence_revisions'">
+                    <h4>Sentence Revisions</h4>
+                    <p>Audit trail of manual sentence adjustments.</p>
+                </div>
                 <div class="report-card <?php echo ($type == 'crime') ? 'active' : ''; ?>" onclick="location.href='reports.php?type=crime'">
                     <h4>Crime Profiles</h4>
                     <p>Standardized offense stats and entry dates.</p>
@@ -131,6 +144,13 @@ $resultData = $conn->query($sql);
                                 <th>Date Updated</th>
                                 <th>Inmate Profile</th>
                                 <th>Charge Revision (From → To)</th>
+                                <th>Authorized By</th>
+                            </tr>
+                        <?php elseif ($type === 'sentence_revisions'): ?>
+                            <tr>
+                                <th>Date Adjusted</th>
+                                <th>Inmate Profile</th>
+                                <th>Sentence Adjustment (Old → New)</th>
                                 <th>Authorized By</th>
                             </tr>
                         <?php elseif ($type === 'crime'): ?>
@@ -188,6 +208,19 @@ $resultData = $conn->query($sql);
                                                 <span class='old-charge'>{$row['old_offence']}</span>
                                                 <span class='update-arrow'>➔</span>
                                                 <span class='new-charge'>{$row['new_offence']}</span>
+                                            </td>
+                                            <td>{$row['updated_by']}</td>
+                                          </tr>";
+                                }
+                                elseif ($type === 'sentence_revisions') {
+                                    $date = date('d/m/Y H:i', strtotime($row['update_date']));
+                                    echo "<tr>
+                                            <td>$date</td>
+                                            <td><strong>{$row['full_name']}</strong><br><small>ID: {$row['kims_id']}</small></td>
+                                            <td>
+                                                <span class='old-charge'>" . number_format($row['old_years'], 2) . " Yrs</span>
+                                                <span class='update-arrow'>➔</span>
+                                                <span class='new-charge'>" . number_format($row['new_years'], 2) . " Yrs</span>
                                             </td>
                                             <td>{$row['updated_by']}</td>
                                           </tr>";

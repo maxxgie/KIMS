@@ -144,6 +144,7 @@ $staff_result = $conn->query($staff_sql);
 
             <div class="admin-grid" style="display: grid; grid-template-columns: 350px 1fr; gap: 30px;">
                 
+                <?php if (isset($_SESSION['role']) && ($_SESSION['role'] === 'Admin' || $_SESSION['role'] === 'Super Admin')): ?>
                 <section>
                     <div class="section-header-bar">Create New Staff Account</div>
                     <div class="judicial-form">
@@ -177,6 +178,14 @@ $staff_result = $conn->query($staff_sql);
                         </form>
                     </div>
                 </section>
+                <?php else: ?>
+                <section>
+                    <div class="section-header-bar">Account Provisioning</div>
+                    <div style="background: #fff3e0; padding: 20px; border: 1px solid #ffe0b2; color: #e65100; font-size: 13px;">
+                        ⚠ <strong>Access Restricted:</strong> Your current role does not have permission to provision new staff accounts. Please contact a Super Admin for assistance.
+                    </div>
+                </section>
+                <?php endif; ?>
 
                 <section>
                     <div class="section-header-bar">Registered System Users</div>

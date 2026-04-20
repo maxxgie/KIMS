@@ -68,6 +68,12 @@ KIMS is a specialized web-based management platform designed for correctional fa
 - The system uses password_verify() for secure authentication.
 - Session timeouts are handled via standard PHP session management.
 
+## Default Login Credentials
+Login as super Admin
+
+- Username: Admin
+- Password: Admin
+
 ## Reporting
 
 Navigate to the Reports section to generate:
@@ -79,8 +85,3 @@ Navigate to the Reports section to generate:
 ---
 This system is intended for authorized use within correctional facilities only.
 
-## Default Login Credentials
-Login as super Admin
-
-- Username: Admin
-- Password: Admin
